@@ -17,7 +17,12 @@
     "url": "https://github.com/vzaboraite/boolean-uk-final-solo-project-server/issues"
   },
   "homepage": "https://github.com/vzaboraite/boolean-uk-final-solo-project-server#readme",
-  "dependencies": {},
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "morgan": "^1.10.0"
+  },
   "devDependencies": {
     "nodemon": "^2.0.15",
     "prisma": "^3.6.0"
