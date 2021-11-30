@@ -6,6 +6,9 @@
   "scripts": {
     "start": "nodemon src/index.js"
   },
+  "prisma": {
+    "seed": "node prisma/seed.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/vzaboraite/boolean-uk-final-solo-project-server.git"
@@ -18,6 +21,8 @@
   },
   "homepage": "https://github.com/vzaboraite/boolean-uk-final-solo-project-server#readme",
   "dependencies": {
+    "@prisma/client": "^3.6.0",
+    "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
