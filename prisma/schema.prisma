@@ -16,3 +16,8 @@ model User {
   username String @unique
   password String
 }
+
+model Game {
+  id     Int    @id @default(autoincrement())
+  status String
+}
