@@ -17,6 +17,9 @@ async function signup(req, res) {
         ...userToCreate,
         password: hashedPassword,
       },
+      select: {
+        id: true,
+      },
     });
 
     const token = createToken(user);
@@ -29,4 +32,45 @@ async function signup(req, res) {
   }
 }
 
-module.exports = { signup };
+async function login(req, res) {
+  const userToFind = { ...req.body };
+  const { username, password } = userToFind;
+
+  if (!username || !password) {
+    res.status(400).json({ error: "Missing information!" });
+  }
+
+  try {
+    const foundUser = await prisma.user.findUnique({
+      where: {
+        username,
+      },
+    });
+
+    if (!foundUser) {
+      res.status(401).json("Not Authorized!");
+    }
+
+    const passwordsMatch = await bcrypt.compare(password, foundUser.password);
+
+    if (passwordsMatch) {
+      const userToTokenize = {
+        ...foundUser,
+      };
+
+      delete userToTokenize.password;
+
+      const token = createToken(userToTokenize);
+
+      res.status(200).json({ token });
+    } else {
+      res.status(401).json("Not Authorized!");
+    }
+  } catch (error) {
+    console.error("[ERROR] /login route: ", error);
+
+    res.status(500).json({ error });
+  }
+}
+
+module.exports = { signup, login };
