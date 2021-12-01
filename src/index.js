@@ -6,6 +6,7 @@ const morgan = require("morgan");
 
 const authRouter = require("./resources/auth/router");
 const gamesRouter = require("./resources/games/router");
+const { protect } = require("./utils/authentication");
 
 const app = express();
 
@@ -21,7 +22,7 @@ app.use(morgan("dev"));
 /* SETUP ROUTES */
 
 app.use("/", authRouter);
-app.use("/games", gamesRouter);
+app.use("/games", protect, gamesRouter);
 
 app.get("*", (req, res) => {
   res.json({ ok: true });
