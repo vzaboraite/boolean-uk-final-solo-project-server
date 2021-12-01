@@ -8,7 +8,7 @@ async function signup(req, res) {
   }
 
   try {
-    const user = awaitprisma.user.create({
+    const user = await prisma.user.create({
       data: {
         ...userToCreate,
       },
