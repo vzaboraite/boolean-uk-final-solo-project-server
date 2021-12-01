@@ -1,5 +1,6 @@
 const prisma = require("../../utils/db");
 const bcrypt = require("bcrypt");
+const { createToken } = require("../../utils/authentication");
 
 async function signup(req, res) {
   const userToCreate = { ...req.body };
@@ -17,7 +18,10 @@ async function signup(req, res) {
         password: hashedPassword,
       },
     });
-    res.status(201).json({ user });
+
+    const token = createToken(user);
+
+    res.status(201).json({ token });
   } catch (error) {
     console.error("[ERROR] /signup route: ", error);
 
