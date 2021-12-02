@@ -48,7 +48,7 @@ async function login(req, res) {
     });
 
     if (!foundUser) {
-      res.status(401).json("Not Authorized!");
+      res.status(401).json({ error: "Not Authorized!" });
     }
 
     const passwordsMatch = await bcrypt.compare(password, foundUser.password);
@@ -64,7 +64,7 @@ async function login(req, res) {
 
       res.status(200).json({ token });
     } else {
-      res.status(401).json("Not Authorized!");
+      res.status(401).json({ error: "Not Authorized!" });
     }
   } catch (error) {
     console.error("[ERROR] /login route: ", error);

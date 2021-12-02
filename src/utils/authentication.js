@@ -12,7 +12,7 @@ const protect = (req, res, next) => {
 
   const findUser = async (error, payload) => {
     if (error) {
-      throw Error("Not Authorized!");
+      throw Error({ error: "Not Authorized!" });
     }
 
     const foundUser = await prisma.user.findUnique({
