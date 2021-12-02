@@ -19,9 +19,11 @@ model User {
 }
 
 model Game {
-  id     Int            @id @default(autoincrement())
-  status String
-  users  UsersOnGames[]
+  id         Int            @id @default(autoincrement())
+  gameStatus String
+  users      UsersOnGames[]
+
+  @@unique(fields: [id, gameStatus], name: "gameStatusId")
 }
 
 model UsersOnGames {
