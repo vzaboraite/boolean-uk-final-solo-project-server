@@ -19,6 +19,35 @@ async function getOneGame(req, res) {
       where: {
         id: targetId,
       },
+      include: {
+        users: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                username: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const cleanResult = {
+      ...game,
+      users: game.users.map((user) => {
+        return user.user;
+      }),
+    };
+
+    res.status(200).json({ cleanResult });
+  } catch (error) {
+    console.error(`[ERROR] /games/${targetId} route: `, error);
+
+    res.status(500).json({ error });
+  }
+}
+
     });
 
     res.status(200).json({ game });
