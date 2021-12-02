@@ -33,7 +33,7 @@ async function getUserWithGames(req, res) {
       res.status(200).json({ userWithGames });
     }
   } catch (error) {
-    console.error("[ERROR] /signup route: ", error);
+    console.error("[ERROR] /users route: ", error);
 
     res.status(500).json({ error });
   }
