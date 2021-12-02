@@ -51,7 +51,6 @@ async function getOneGame(req, res) {
 async function joinGame(req, res) {
   const targetId = parseInt(req.params.id);
 
-  console.log(req.body);
   const userId = req.body.userId;
 
   try {
@@ -107,4 +106,48 @@ async function joinGame(req, res) {
   }
 }
 
-module.exports = { getAllGames, getOneGame, joinGame };
+async function createGame(req, res) {
+  const targetUserId = parseInt(req.body.userId);
+
+  try {
+    const newGame = await prisma.game.create({
+      data: {
+        gameStatus: "waiting",
+        users: {
+          create: {
+            user: {
+              connect: {
+                id: targetUserId,
+              },
+            },
+          },
+        },
+      },
+      include: {
+        users: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                username: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const cleanNewGame = {
+      ...newGame,
+      users: newGame.users.map((user) => user.user),
+    };
+
+    res.status(200).json({ cleanNewGame });
+  } catch (error) {
+    console.error(`[ERROR] create /games route: `, error);
+
+    res.status(500).json({ error });
+  }
+}
+
+module.exports = { getAllGames, getOneGame, joinGame, createGame };
