@@ -12,4 +12,22 @@ async function getAllGames(req, res) {
   }
 }
 
-module.exports = { getAllGames };
+async function getOneGame(req, res) {
+  console.log("Inside getOneGame");
+  const targetId = parseInt(req.params.id);
+  try {
+    const game = await prisma.game.findFirst({
+      where: {
+        id: targetId,
+      },
+    });
+
+    res.status(200).json({ game });
+  } catch (error) {
+    console.error("[ERROR] /signup route: ", error);
+
+    res.status(500).json({ error });
+  }
+}
+
+module.exports = { getAllGames, getOneGame };
