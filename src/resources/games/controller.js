@@ -2,7 +2,11 @@ const prisma = require("../../utils/db");
 
 async function getAllGames(req, res) {
   try {
-    const games = await prisma.game.findMany();
+    const games = await prisma.game.findMany({
+      include: {
+        users: true,
+      },
+    });
 
     res.status(200).json({ games });
   } catch (error) {
