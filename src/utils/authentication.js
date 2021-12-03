@@ -19,6 +19,10 @@ const protect = (req, res, next) => {
       where: {
         id: payload.id,
       },
+      select: {
+        id: true,
+        username: true,
+      },
     });
 
     if (!foundUser) {
