@@ -12,12 +12,16 @@ const protect = (req, res, next) => {
 
   const findUser = async (error, payload) => {
     if (error) {
-      throw Error({ error: "Not Authorized!" });
+      res.status(401).json({ error: "Not Authorized!" });
     }
 
     const foundUser = await prisma.user.findUnique({
       where: {
         id: payload.id,
+      },
+      select: {
+        id: true,
+        username: true,
       },
     });
 
