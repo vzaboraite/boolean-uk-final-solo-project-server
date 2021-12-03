@@ -1,7 +1,6 @@
 const prisma = require("../../utils/db");
 
 async function getUserWithGames(req, res) {
-  console.log({ USER: req.user });
   const foundUser = req.user;
 
   try {

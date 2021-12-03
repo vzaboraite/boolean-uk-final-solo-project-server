@@ -40,7 +40,7 @@ async function getOneGame(req, res) {
       }),
     };
 
-    res.status(200).json({ cleanResult });
+    res.status(200).json({ game: cleanResult });
   } catch (error) {
     console.error(`[ERROR] /games/${targetId} route: `, error);
 
@@ -50,8 +50,7 @@ async function getOneGame(req, res) {
 
 async function joinGame(req, res) {
   const targetId = parseInt(req.params.id);
-
-  const userId = req.body.userId;
+  const userId = req.user.id;
 
   try {
     const result = await prisma.game.update({
@@ -98,7 +97,7 @@ async function joinGame(req, res) {
       }),
     };
 
-    res.status(200).json({ cleanResult });
+    res.status(200).json({ game: cleanResult });
   } catch (error) {
     console.error(`[ERROR] /games/${targetId}/join route: `, error);
 
@@ -107,7 +106,7 @@ async function joinGame(req, res) {
 }
 
 async function createGame(req, res) {
-  const targetUserId = parseInt(req.body.userId);
+  const userId = req.user.id;
 
   try {
     const newGame = await prisma.game.create({
@@ -117,7 +116,7 @@ async function createGame(req, res) {
           create: {
             user: {
               connect: {
-                id: targetUserId,
+                id: userId,
               },
             },
           },
@@ -142,7 +141,7 @@ async function createGame(req, res) {
       users: newGame.users.map((user) => user.user),
     };
 
-    res.status(200).json({ cleanNewGame });
+    res.status(200).json({ game: cleanNewGame });
   } catch (error) {
     console.error(`[ERROR] create /games route: `, error);
 
