@@ -27,10 +27,11 @@ model Game {
 }
 
 model UsersOnGames {
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
-  gameId String
-  game   Game   @relation(fields: [gameId], references: [id])
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  gameId    String
+  game      Game     @relation(fields: [gameId], references: [id])
+  createdAt DateTime @default(now())
 
   @@id([userId, gameId])
 }
