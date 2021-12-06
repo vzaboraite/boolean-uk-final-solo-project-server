@@ -19,6 +19,7 @@ async function signup(req, res) {
       },
       select: {
         id: true,
+        username: true,
       },
     });
 
