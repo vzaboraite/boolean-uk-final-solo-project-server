@@ -4,7 +4,8 @@
   "description": "Upstream for final solo projects",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon src/index.js"
+    "start": "nodemon src/index.js",
+    "prod-start": "node src/index.js"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
@@ -22,6 +23,7 @@
   "homepage": "https://github.com/vzaboraite/boolean-uk-final-solo-project-server#readme",
   "dependencies": {
     "@prisma/client": "^3.6.0",
+    "prisma": "^3.6.0",
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
@@ -30,7 +32,6 @@
     "morgan": "^1.10.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.15",
-    "prisma": "^3.6.0"
+    "nodemon": "^2.0.15"
   }
 }
