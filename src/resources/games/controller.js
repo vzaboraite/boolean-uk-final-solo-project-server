@@ -1,3 +1,4 @@
+const { Color } = require(".prisma/client");
 const prisma = require("../../utils/db");
 
 async function getAllGames(req, res) {
@@ -40,7 +41,12 @@ async function getOneGame(req, res) {
     const cleanResult = {
       ...game,
       users: game.users.map((user) => {
-        return user.user;
+        return {
+          id: user.user.id,
+          username: user.user.username,
+          createdAt: user.createdAt,
+          color: user.color,
+        };
       }),
     };
 
@@ -72,6 +78,7 @@ async function joinGame(req, res) {
                 id: userId,
               },
             },
+            color: Color.BLACK,
           },
         },
         gameStatus: "in-progress",
@@ -93,7 +100,12 @@ async function joinGame(req, res) {
     const cleanResult = {
       ...result,
       users: result.users.map((user) => {
-        return user.user;
+        return {
+          id: user.user.id,
+          username: user.user.username,
+          createdAt: user.createdAt,
+          color: user.color,
+        };
       }),
     };
 
@@ -119,6 +131,7 @@ async function createGame(req, res) {
                 id: userId,
               },
             },
+            color: Color.RED,
           },
         },
       },
@@ -138,7 +151,14 @@ async function createGame(req, res) {
 
     const cleanNewGame = {
       ...newGame,
-      users: newGame.users.map((user) => user.user),
+      users: newGame.users.map((user) => {
+        return {
+          id: user.user.id,
+          username: user.user.username,
+          createdAt: user.createdAt,
+          color: user.color,
+        };
+      }),
     };
 
     res.status(200).json({ game: cleanNewGame });
