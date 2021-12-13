@@ -12,26 +12,46 @@ datasource db {
 }
 
 model User {
-  id       String         @id @default(uuid())
-  username String         @unique
+  id       String           @id @default(uuid())
+  username String           @unique
   password String
-  games    UsersOnGames[]
+  games    GameAssignment[]
 }
 
 model Game {
-  id         String         @id @default(uuid())
+  id         String           @id @default(uuid())
   gameStatus String
-  users      UsersOnGames[]
+  users      GameAssignment[]
+  moves      Move[]
 
   @@unique(fields: [id, gameStatus], name: "gameStatusIdConnector")
 }
 
-model UsersOnGames {
+model GameAssignment {
   userId    String
   user      User     @relation(fields: [userId], references: [id])
   gameId    String
   game      Game     @relation(fields: [gameId], references: [id])
   createdAt DateTime @default(now())
+  color     Color
 
   @@id([userId, gameId])
+}
+
+model Move {
+  id            String   @id @default(uuid())
+  rowIndex      Int
+  colIndex      Int
+  captureMoveId String?  @unique
+  captureMove   Move?    @relation("MoveHistory", fields: [captureMoveId], references: [id])
+  parentMove    Move?    @relation("MoveHistory")
+  gameId        String
+  game          Game     @relation(fields: [gameId], references: [id])
+  createdAt     DateTime @default(now())
+  color         Color
+}
+
+enum Color {
+  RED
+  BLACK
 }
