@@ -22,7 +22,7 @@ model Game {
   id         String           @id @default(uuid())
   gameStatus String
   users      GameAssignment[]
-  moves      Move[]
+  moves      String
 
   @@unique(fields: [id, gameStatus], name: "gameStatusIdConnector")
 }
@@ -36,19 +36,6 @@ model GameAssignment {
   color     Color
 
   @@id([userId, gameId])
-}
-
-model Move {
-  id            String   @id @default(uuid())
-  rowIndex      Int
-  colIndex      Int
-  captureMoveId String?  @unique
-  captureMove   Move?    @relation("MoveHistory", fields: [captureMoveId], references: [id])
-  parentMove    Move?    @relation("MoveHistory")
-  gameId        String
-  game          Game     @relation(fields: [gameId], references: [id])
-  createdAt     DateTime @default(now())
-  color         Color
 }
 
 enum Color {
