@@ -7,6 +7,7 @@ const morgan = require("morgan");
 const authRouter = require("./resources/auth/router");
 const gamesRouter = require("./resources/games/router");
 const usersRouter = require("./resources/users/router");
+const movesRouter = require("./resources/moves/router");
 const { protect } = require("./utils/authentication");
 
 const app = express();
@@ -25,6 +26,7 @@ app.use(morgan("dev"));
 app.use("/", authRouter);
 app.use("/games", protect, gamesRouter);
 app.use("/users", protect, usersRouter);
+app.use("/moves", movesRouter);
 
 app.get("*", (req, res) => {
   res.json({ ok: true });
