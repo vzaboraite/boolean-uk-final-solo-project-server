@@ -123,6 +123,7 @@ async function createGame(req, res) {
   try {
     const newGame = await prisma.game.create({
       data: {
+        moves: "",
         gameStatus: "waiting",
         users: {
           create: {
@@ -169,4 +170,61 @@ async function createGame(req, res) {
   }
 }
 
-module.exports = { getAllGames, getOneGame, joinGame, createGame };
+async function addMove(req, res) {
+  const targetId = req.params.id;
+  const { newMove } = req.body;
+  try {
+    const { moves } = await prisma.game.findFirst({
+      where: {
+        id: targetId,
+      },
+      select: {
+        moves: true,
+      },
+    });
+
+    const result = await prisma.game.update({
+      where: {
+        gameStatusIdConnector: {
+          id: targetId,
+          gameStatus: "in-progress",
+        },
+      },
+      data: {
+        moves: moves === "" ? newMove : `${moves}|${newMove}`,
+      },
+      include: {
+        users: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                username: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const cleanResult = {
+      ...result,
+      users: result.users.map((user) => {
+        return {
+          id: user.user.id,
+          username: user.user.username,
+          createdAt: user.createdAt,
+          color: user.color,
+        };
+      }),
+    };
+
+    res.status(200).json({ game: cleanResult });
+  } catch (error) {
+    console.error(`[ERROR] /games/${targetId}/join route: `, error);
+
+    res.status(500).json({ error });
+  }
+}
+
+module.exports = { getAllGames, getOneGame, joinGame, createGame, addMove };
