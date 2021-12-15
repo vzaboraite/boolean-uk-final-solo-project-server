@@ -1,5 +1,11 @@
 const { Color } = require(".prisma/client");
 const prisma = require("../../utils/db");
+const {
+  initialBoard,
+  getMovesFromString,
+  applyMoves,
+  checkHasValidMoves,
+} = require("../../utils/game");
 
 async function getAllGames(req, res) {
   try {
@@ -183,6 +189,39 @@ async function addMove(req, res) {
       },
     });
 
+    const updatedMoves = moves === "" ? newMove : `${moves}|${newMove}`;
+    const movesArr = getMovesFromString(updatedMoves);
+
+    const board = applyMoves(initialBoard, movesArr);
+
+    let redPiecesLeft = false;
+    let blackPiecesLeft = false;
+    let updatedStatus = "";
+
+    board.forEach((row) => {
+      row.forEach((square) => {
+        if (square === "red") {
+          redPiecesLeft = true;
+        } else if (square === "black") {
+          blackPiecesLeft = true;
+        }
+      });
+    });
+
+    if (redPiecesLeft && blackPiecesLeft) {
+      const nextColor = movesArr.length % 2 === 0 ? "red" : "black";
+      const nextColorHasValidMoves = checkHasValidMoves(nextColor, board);
+      if (nextColorHasValidMoves) {
+        updatedStatus = "in-progress";
+      } else {
+        updatedStatus = "draw";
+      }
+    } else if (redPiecesLeft) {
+      updatedStatus = "red-win";
+    } else if (blackPiecesLeft) {
+      updatedStatus = "black-win";
+    }
+
     const result = await prisma.game.update({
       where: {
         gameStatusIdConnector: {
@@ -191,7 +230,8 @@ async function addMove(req, res) {
         },
       },
       data: {
-        moves: moves === "" ? newMove : `${moves}|${newMove}`,
+        moves: updatedMoves,
+        gameStatus: updatedStatus,
       },
       include: {
         users: {
