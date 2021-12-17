@@ -11,7 +11,16 @@ async function getAllGames(req, res) {
   try {
     const games = await prisma.game.findMany({
       include: {
-        users: true,
+        users: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                username: true,
+              },
+            },
+          },
+        },
       },
     });
 
