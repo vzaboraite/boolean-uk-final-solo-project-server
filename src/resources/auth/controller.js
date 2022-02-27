@@ -7,9 +7,20 @@ async function signup(req, res) {
 
   if (!userToCreate.username || !userToCreate.password) {
     res.status(400).json({ error: "Missing information!" });
+    return;
   }
 
   try {
+    const foundUser = await prisma.user.findUnique({
+      where: {
+        username: userToCreate.username,
+      },
+    });
+
+    if (foundUser) {
+      res.status(409).json({ error: "Username is taken!" });
+      return;
+    }
     const hashedPassword = await bcrypt.hash(userToCreate.password, 8);
 
     const user = await prisma.user.create({
@@ -39,6 +50,7 @@ async function login(req, res) {
 
   if (!username || !password) {
     res.status(400).json({ error: "Missing information!" });
+    return;
   }
 
   try {
@@ -50,6 +62,7 @@ async function login(req, res) {
 
     if (!foundUser) {
       res.status(401).json({ error: "Not Authorized!" });
+      return;
     }
 
     const passwordsMatch = await bcrypt.compare(password, foundUser.password);
